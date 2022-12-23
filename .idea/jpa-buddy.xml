@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig">
+    <option name="sourceDiffType" value="DB" />
+    <option name="defaultUnitInitialized" value="true" />
+    <option name="renamerInitialized" value="true" />
+    <option name="sourceDbValue" value="71b47e58-ca4d-4139-bcef-2d8cfce5b562" />
+    <option name="targetDbValue" value="71b47e58-ca4d-4139-bcef-2d8cfce5b562" />
+    <option name="snapshotDbValue" value="71b47e58-ca4d-4139-bcef-2d8cfce5b562" />
+    <option name="liquibaseAuthor" value="" />
+  </component>
+</project>
