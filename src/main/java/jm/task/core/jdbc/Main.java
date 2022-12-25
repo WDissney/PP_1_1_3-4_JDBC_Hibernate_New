@@ -1,6 +1,6 @@
 package jm.task.core.jdbc;
+import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,8 @@ public class Main {
         use.add(user2);
         use.add(user3);
         use.add(user4);
-        UserService usserv = new UserServiceImpl();
+        UserServiceImpl usserv = new UserServiceImpl();
+        usserv.dao = new UserDaoJDBCImpl();
         usserv.createUsersTable();
         use.forEach(t -> usserv.saveUser(t.getName(), t.getLastName(), t.getAge()));
         usserv.getAllUsers().forEach(System.out::println);
