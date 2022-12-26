@@ -2,7 +2,8 @@
 <project version="4">
   <component name="JpbDataSourceConfig">
     <data-sources>
-      <data-source id="71b47e58-ca4d-4139-bcef-2d8cfce5b562" name="PP_1_1_3-4_JDBC_Hibernate" url="jdbc:mysql://localhost/kata_usersdb?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=UTC" driverClass="com.mysql.cj.jdbc.Driver" />
+      <data-source id="71b47e58-ca4d-4139-bcef-2d8cfce5b562" name="PP_1_1_3-4_JDBC_Hibernate" url="jdbc:mysql://localhost/usersdb?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=UTC" driverClass="com.mysql.cj.jdbc.Driver" />
+      <data-source id="5f80c4fa-39d1-47a9-8d7e-85559027dda3" name="PP_1_1_3-4_JDBC_Hibernate_New" url="jdbc:postgresql://localhost/PP_1_1_3-4_JDBC_Hibernate_New" driverClass="org.postgresql.Driver" />
     </data-sources>
     <data-source-infos>
       <data-source-info id="" persistence-unit-name="Default" />

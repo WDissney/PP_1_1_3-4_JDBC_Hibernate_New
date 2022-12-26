@@ -20,7 +20,7 @@ public class Main {
         usserv.createUsersTable();
         use.forEach(t -> usserv.saveUser(t.getName(), t.getLastName(), t.getAge()));
         usserv.getAllUsers().forEach(System.out::println);
-        usserv.createUsersTable();
+        usserv.cleanUsersTable();
         usserv.dropUsersTable();
 
     }
