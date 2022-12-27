@@ -24,15 +24,16 @@ public class UserDaoJDBCImpl implements UserDao {
             con.setAutoCommit(false);
             try (Statement st = con.createStatement()) {
                 st.execute(sq);
+                con.commit();
             } catch (SQLException e) {
                 con.rollback();
-                con.setAutoCommit(true);
                 System.out.println("Ошибка БД");
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
-            con.commit();
-            con.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -41,15 +42,16 @@ public class UserDaoJDBCImpl implements UserDao {
             con.setAutoCommit(false);
             try (Statement st = con.createStatement()) {
                 st.execute("DROP TABLE IF EXISTS allusers;");
+                con.commit();
             } catch (SQLException e) {
                 con.rollback();
-                con.setAutoCommit(true);
                 System.out.println("Ошибка БД");
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
-            con.commit();
-            con.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -62,15 +64,16 @@ public class UserDaoJDBCImpl implements UserDao {
                 st.setByte(3, age);
                 st.execute();
                 System.out.println("User с именем - " + name + " добавлен в базу");
+                con.commit();
             } catch (SQLException e) {
                 con.rollback();
-                con.setAutoCommit(true);
                 System.out.println("Ошибка БД");
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
-            con.commit();
-            con.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -80,15 +83,16 @@ public class UserDaoJDBCImpl implements UserDao {
             try (PreparedStatement st = con.prepareStatement("DELETE FROM allusers WHERE id = ?")) {
                 st.setLong(1, id);
                 st.execute();
+                con.commit();
             } catch (SQLException e) {
                 con.rollback();
-                con.setAutoCommit(true);
                 System.out.println("Ошибка БД");
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
-            con.commit();
-            con.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -104,16 +108,17 @@ public class UserDaoJDBCImpl implements UserDao {
                     String secondName = resultSet.getString("lastName");
                     byte age = (byte) (resultSet.getInt("age"));
                     user.add(new User(id, name, secondName, age));
+                    con.commit();
                 }
             } catch (SQLException e) {
                 con.rollback();
-                con.setAutoCommit(true);
                 System.out.println("Ошибка БД");
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
-            con.commit();
-            con.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return user;
     }
@@ -124,16 +129,16 @@ public class UserDaoJDBCImpl implements UserDao {
 
             try (Statement st = con.createStatement()) {
                 st.execute("DELETE FROM allusers");
+                con.commit();
             } catch (SQLException e) {
                 con.rollback();
-                con.setAutoCommit(true);
                 System.out.println("Ошибка БД");
+                e.printStackTrace();
+            } finally {
+                con.setAutoCommit(true);
             }
-
-            con.commit();
-            con.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
