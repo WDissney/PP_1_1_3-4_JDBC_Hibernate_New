@@ -20,124 +20,110 @@ public class UserDaoJDBCImpl implements UserDao {
                 "  `age` INT NOT NULL," +
                 "  PRIMARY KEY (`id`)," +
                 "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);";
-        try (Connection con = Util.getConn()) {
+        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
             con.setAutoCommit(false);
-            try (Statement st = con.createStatement()) {
-                st.execute(sq);
+            st.execute(sq);
+            if (!con.isClosed()) {
                 con.commit();
-            } catch (SQLException e) {
+            } else {
                 con.rollback();
-                System.out.println("Ошибка БД");
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
             }
+            con.setAutoCommit(true);
         } catch (SQLException e) {
+
+            System.out.println("Ошибка БД");
             e.printStackTrace();
         }
     }
+
 
     public void dropUsersTable() {
-        try (Connection con = Util.getConn()) {
+        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
             con.setAutoCommit(false);
-            try (Statement st = con.createStatement()) {
-                st.execute("DROP TABLE IF EXISTS allusers;");
+            st.execute("DROP TABLE IF EXISTS allusers;");
+            if (!con.isClosed()) {
                 con.commit();
-            } catch (SQLException e) {
+            } else {
                 con.rollback();
-                System.out.println("Ошибка БД");
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
             }
+            con.setAutoCommit(true);
         } catch (SQLException e) {
+            System.out.println("Ошибка БД");
             e.printStackTrace();
         }
     }
 
+
     public void saveUser(String name, String lastName, byte age) {
-        try (Connection con = Util.getConn()) {
+        try (Connection con = Util.getConn(); PreparedStatement st = con.prepareStatement("INSERT INTO allusers (name, lastName, age) VALUES (?,?,?)")) {
             con.setAutoCommit(false);
-            try (PreparedStatement st = con.prepareStatement("INSERT INTO allusers (name, lastName, age) VALUES (?,?,?)")) {
-                st.setString(1, name);
-                st.setString(2, lastName);
-                st.setByte(3, age);
-                st.execute();
-                System.out.println("User с именем - " + name + " добавлен в базу");
+            st.setString(1, name);
+            st.setString(2, lastName);
+            st.setByte(3, age);
+            st.execute();
+            System.out.println("User с именем - " + name + " добавлен в базу");
+            if (!con.isClosed()) {
                 con.commit();
-            } catch (SQLException e) {
+            } else {
                 con.rollback();
-                System.out.println("Ошибка БД");
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
             }
+            con.setAutoCommit(true);
         } catch (SQLException e) {
+            System.out.println("Ошибка БД");
             e.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
-        try (Connection con = Util.getConn()) {
+        try (Connection con = Util.getConn(); PreparedStatement st = con.prepareStatement("DELETE FROM allusers WHERE id = ?")) {
             con.setAutoCommit(false);
-            try (PreparedStatement st = con.prepareStatement("DELETE FROM allusers WHERE id = ?")) {
-                st.setLong(1, id);
-                st.execute();
+            st.setLong(1, id);
+            st.execute();
+            if (!con.isClosed()) {
                 con.commit();
-            } catch (SQLException e) {
+            } else {
                 con.rollback();
-                System.out.println("Ошибка БД");
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
             }
+            con.setAutoCommit(true);
         } catch (SQLException e) {
+            System.out.println("Ошибка БД");
             e.printStackTrace();
         }
     }
 
+
     public List<User> getAllUsers() {
         List<User> user = new ArrayList<>();
-        try (Connection con = Util.getConn()) {
-            con.setAutoCommit(false);
-
-            try (Statement st = con.createStatement(); ResultSet resultSet = st.executeQuery("SELECT * FROM allusers")) {
-                while (resultSet.next()) {
-                    long id = resultSet.getLong("id");
-                    String name = resultSet.getString("name");
-                    String secondName = resultSet.getString("lastName");
-                    byte age = (byte) (resultSet.getInt("age"));
-                    user.add(new User(id, name, secondName, age));
-                    con.commit();
-                }
-            } catch (SQLException e) {
-                con.rollback();
-                System.out.println("Ошибка БД");
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
+        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
+            ResultSet resultSet = st.executeQuery("SELECT * FROM allusers");
+            while (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                String name = resultSet.getString("name");
+                String secondName = resultSet.getString("lastName");
+                byte age = (byte) (resultSet.getInt("age"));
+                User u = new User(name, secondName, age);
+                u.setId(id);
+                user.add(u);
             }
         } catch (SQLException e) {
+            System.out.println("Ошибка БД");
             e.printStackTrace();
         }
         return user;
     }
 
     public void cleanUsersTable() {
-        try (Connection con = Util.getConn()) {
+        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
             con.setAutoCommit(false);
-
-            try (Statement st = con.createStatement()) {
-                st.execute("DELETE FROM allusers");
+            st.execute("DELETE FROM allusers");
+            if (!con.isClosed()) {
                 con.commit();
-            } catch (SQLException e) {
+            } else {
                 con.rollback();
-                System.out.println("Ошибка БД");
-                e.printStackTrace();
-            } finally {
-                con.setAutoCommit(true);
             }
+            con.setAutoCommit(true);
         } catch (SQLException e) {
+            System.out.println("Ошибка БД");
             e.printStackTrace();
         }
     }

@@ -1,5 +1,7 @@
 package jm.task.core.jdbc;
 
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
+import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
@@ -18,12 +20,13 @@ public class Main {
         use.add(user2);
         use.add(user3);
         use.add(user4);
-        UserService usserv = new UserServiceImpl();
+        //UserService usserv = new UserServiceImpl(new UserDaoJDBCImpl());
+        UserService usserv = new UserServiceImpl(new UserDaoHibernateImpl());
         usserv.createUsersTable();
         use.forEach(t -> usserv.saveUser(t.getName(), t.getLastName(), t.getAge()));
-        usserv.getAllUsers().forEach(System.out::println);
-        usserv.cleanUsersTable();
-        usserv.dropUsersTable();
+//       usserv.getAllUsers().forEach(System.out::println);
+//       usserv.cleanUsersTable();
+//        usserv.dropUsersTable();
 
     }
 }
