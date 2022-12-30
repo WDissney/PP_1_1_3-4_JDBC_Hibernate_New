@@ -25,7 +25,6 @@ public class Main {
         //UserService usserv = new UserServiceImpl(new UserDaoJDBCImpl());
         usserv.createUsersTable();
         for (User t : use) usserv.saveUser(t.getName(), t.getLastName(), t.getAge());
-
         usserv.getAllUsers().forEach(System.out::println);
         usserv.cleanUsersTable();
         //usserv.removeUserById(3);
