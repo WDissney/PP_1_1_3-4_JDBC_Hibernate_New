@@ -19,17 +19,19 @@ public class Util {
     private static final String USERNAME = "Kosmos";
     private static final String PASSWORD = "Denis@4491";
     private static SessionFactory session;
+    private static Connection conn;
 
-    public static Connection getConn() throws SQLException {
-        Connection conn;
-        try {
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException e) {
-            throw new SQLException(e);
+
+    public static Connection getConn()  {
+        if (conn == null) {
+            try {
+                conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return conn;
     }
-
     public static SessionFactory getSession()  {
         if (session == null) {
             try {

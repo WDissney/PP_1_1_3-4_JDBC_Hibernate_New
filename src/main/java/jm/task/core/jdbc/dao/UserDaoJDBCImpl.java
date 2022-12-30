@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-
-    public UserDaoJDBCImpl() {
+    private final Connection con = Util.getConn();
+    public UserDaoJDBCImpl()  {
     }
 
-    public void createUsersTable() {
+    public void createUsersTable() throws SQLException {
         String sq = "CREATE TABLE IF NOT EXISTS `usersdb`.`allusers` (" +
                 "  `id` BIGINT(4) NOT NULL AUTO_INCREMENT," +
                 "  `name` VARCHAR(50) NOT NULL," +
@@ -20,72 +20,59 @@ public class UserDaoJDBCImpl implements UserDao {
                 "  `age` INT NOT NULL," +
                 "  PRIMARY KEY (`id`)," +
                 "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);";
-        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
+        try (Statement st = con.createStatement()) {
             con.setAutoCommit(false);
             st.execute(sq);
-            if (!con.isClosed()) {
-                con.commit();
-            } else {
-                con.rollback();
-            }
-            con.setAutoCommit(true);
+            con.commit();
         } catch (SQLException e) {
-
+            con.rollback();
             System.out.println("Ошибка БД");
             e.printStackTrace();
+        } finally {
+            con.setAutoCommit(true);
         }
     }
 
 
-    public void dropUsersTable() {
-        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
+    public void dropUsersTable() throws SQLException {
+        try (Statement st = con.createStatement()) {
             con.setAutoCommit(false);
             st.execute("DROP TABLE IF EXISTS allusers;");
-            if (!con.isClosed()) {
-                con.commit();
-            } else {
-                con.rollback();
-            }
-            con.setAutoCommit(true);
+            con.commit();
         } catch (SQLException e) {
+            con.rollback();
             System.out.println("Ошибка БД");
             e.printStackTrace();
+        } finally {
+            con.setAutoCommit(true);
         }
     }
 
 
-    public void saveUser(String name, String lastName, byte age) {
-        try (Connection con = Util.getConn(); PreparedStatement st = con.prepareStatement("INSERT INTO allusers (name, lastName, age) VALUES (?,?,?)")) {
+    public void saveUser(String name, String lastName, byte age) throws SQLException {
+        try (PreparedStatement st = con.prepareStatement("INSERT INTO allusers ( name, lastName, age) VALUES (?,?,?)")) {
             con.setAutoCommit(false);
             st.setString(1, name);
             st.setString(2, lastName);
             st.setByte(3, age);
             st.execute();
+            con.commit();
             System.out.println("User с именем - " + name + " добавлен в базу");
-            if (!con.isClosed()) {
-                con.commit();
-            } else {
-                con.rollback();
-            }
-            con.setAutoCommit(true);
         } catch (SQLException e) {
+            con.rollback();
             System.out.println("Ошибка БД");
             e.printStackTrace();
         }
     }
 
-    public void removeUserById(long id) {
-        try (Connection con = Util.getConn(); PreparedStatement st = con.prepareStatement("DELETE FROM allusers WHERE id = ?")) {
+    public void removeUserById(long id) throws SQLException {
+        try (PreparedStatement st = con.prepareStatement("DELETE FROM allusers WHERE id = ?")) {
             con.setAutoCommit(false);
             st.setLong(1, id);
             st.execute();
-            if (!con.isClosed()) {
-                con.commit();
-            } else {
-                con.rollback();
-            }
-            con.setAutoCommit(true);
+            con.commit();
         } catch (SQLException e) {
+            con.rollback();
             System.out.println("Ошибка БД");
             e.printStackTrace();
         }
@@ -94,7 +81,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> user = new ArrayList<>();
-        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
+        try (Statement st = con.createStatement()) {
             ResultSet resultSet = st.executeQuery("SELECT * FROM allusers");
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
@@ -112,19 +99,17 @@ public class UserDaoJDBCImpl implements UserDao {
         return user;
     }
 
-    public void cleanUsersTable() {
-        try (Connection con = Util.getConn(); Statement st = con.createStatement()) {
+    public void cleanUsersTable() throws SQLException {
+        try (Statement st = con.createStatement()) {
             con.setAutoCommit(false);
             st.execute("DELETE FROM allusers");
-            if (!con.isClosed()) {
-                con.commit();
-            } else {
-                con.rollback();
-            }
-            con.setAutoCommit(true);
+            con.commit();
         } catch (SQLException e) {
+            con.rollback();
             System.out.println("Ошибка БД");
             e.printStackTrace();
+        } finally {
+            con.setAutoCommit(true);
         }
     }
 }

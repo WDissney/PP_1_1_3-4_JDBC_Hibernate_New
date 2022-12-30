@@ -28,18 +28,16 @@ public class UserDaoHibernateImpl implements UserDao {
             ses.createSQLQuery(sq).executeUpdate();
             ses.getTransaction().commit();
         } catch (Exception e) {
-            assert ses != null;
-            ses.getTransaction().rollback();
+            if (ses != null) ses.getTransaction().rollback();
             e.printStackTrace();
         } finally {
-            assert ses != null;
-            ses.close();
+            if (ses != null) ses.close();
         }
     }
 
 
     @Override
-    public void dropUsersTable() {
+    public void dropUsersTable()  {
         Session ses = null;
         try {
             ses = Util.getSession().openSession();
@@ -47,12 +45,10 @@ public class UserDaoHibernateImpl implements UserDao {
             ses.createSQLQuery("DROP TABLE IF EXISTS allusers;").executeUpdate();
             ses.getTransaction().commit();
         } catch (Exception e){
-            assert ses != null;
-            ses.getTransaction().rollback();
+            if (ses != null) ses.getTransaction().rollback();
             e.printStackTrace();
         } finally {
-            assert ses != null;
-            ses.close();
+            if (ses != null) ses.close();
         }
     }
 
@@ -68,19 +64,29 @@ public class UserDaoHibernateImpl implements UserDao {
                     .setParameter("age", age)
                     .executeUpdate();
             ses.getTransaction().commit();
+            System.out.println("User с именем - " + name + " добавлен в базу");
         } catch (Exception e) {
-            assert ses != null;
-            ses.getTransaction().rollback();
+            if (ses != null) ses.getTransaction().rollback();
             e.printStackTrace();
         } finally {
-            assert ses != null;
-            ses.close();
+            if (ses != null) ses.close();
         }
     }
 
     @Override
     public void removeUserById(long id) {
-
+        Session ses = Util.getSession().openSession();
+        try  {
+            ses.beginTransaction();
+            User user = ses.get(User.class, id);
+            ses.delete(user);
+            ses.getTransaction().commit();
+        } catch (Exception e) {
+            if (ses != null) ses.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            if (ses != null) ses.close();
+        }
     }
 
     @Override
