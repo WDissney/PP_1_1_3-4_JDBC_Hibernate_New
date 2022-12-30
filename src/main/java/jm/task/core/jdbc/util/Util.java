@@ -1,13 +1,11 @@
 package jm.task.core.jdbc.util;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 
-import javax.imageio.spi.ServiceRegistry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -36,8 +34,8 @@ public class Util {
         if (session == null) {
             try {
                 Configuration config = new Configuration();
-                Properties setting = new Properties();
 
+                Properties setting = new Properties();
                 setting.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
                 setting.put(Environment.URL, URL);
                 setting.put(Environment.USER, USERNAME);

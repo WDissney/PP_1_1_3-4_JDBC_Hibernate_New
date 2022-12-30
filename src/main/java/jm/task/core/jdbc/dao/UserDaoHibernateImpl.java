@@ -4,7 +4,9 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
@@ -37,12 +39,13 @@ public class UserDaoHibernateImpl implements UserDao {
 
 
     @Override
-    public void dropUsersTable()  {
+    public void dropUsersTable() {
         Session ses = null;
         try {
             ses = Util.getSession().openSession();
             ses.beginTransaction();
-            ses.createSQLQuery("DROP TABLE IF EXISTS allusers;").executeUpdate();
+            ses.createSQLQuery("DROP TABLE IF EXISTS allusers;")
+                    .executeUpdate();
             ses.getTransaction().commit();
         } catch (Exception e){
             if (ses != null) ses.getTransaction().rollback();
@@ -91,11 +94,32 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        Session ses = Util.getSession().openSession();
+        List<User> user = new ArrayList<>();
+        try {
+            ses.beginTransaction();
+            user = ses.createQuery("from User")
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (ses != null) ses.close();
+        }
+        return user;
     }
 
     @Override
     public void cleanUsersTable() {
-
+        Session ses = Util.getSession().openSession();
+        try {
+            ses.beginTransaction();
+            ses.createQuery("delete User");
+            ses.getTransaction().commit();
+        } catch (Exception e) {
+            if (ses != null) ses.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            if (ses != null) ses.close();
+        }
     }
 }

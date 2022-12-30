@@ -21,14 +21,14 @@ public class Main {
         use.add(user2);
         use.add(user3);
         use.add(user4);
+        UserService usserv = new UserServiceImpl(new UserDaoHibernateImpl());
         //UserService usserv = new UserServiceImpl(new UserDaoJDBCImpl());
-        UserService usserv = new UserServiceImpl(new UserDaoJDBCImpl());
         usserv.createUsersTable();
         for (User t : use) usserv.saveUser(t.getName(), t.getLastName(), t.getAge());
 
         usserv.getAllUsers().forEach(System.out::println);
         usserv.cleanUsersTable();
-        usserv.removeUserById(3);
+        //usserv.removeUserById(3);
         usserv.dropUsersTable();
 
     }
