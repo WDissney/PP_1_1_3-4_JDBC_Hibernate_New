@@ -9,6 +9,8 @@ import java.util.List;
 
 
 public class UserDaoHibernateImpl implements UserDao {
+
+    public Transaction tran = null;
     public UserDaoHibernateImpl() {
 
     }
@@ -17,13 +19,12 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void createUsersTable() {
         String sq = "CREATE TABLE IF NOT EXISTS usersdb.allusers (" +
-                "  id BIGINT(4) NOT NULL AUTO_INCREMENT," +
+                "  id BIGINT(20) NOT NULL AUTO_INCREMENT," +
                 "  name VARCHAR(50) NOT NULL," +
                 "  lastName VARCHAR(70) NOT NULL," +
                 "  age INT NOT NULL," +
                 "  PRIMARY KEY (id)," +
                 "  UNIQUE INDEX id_UNIQUE (id ASC) VISIBLE);";
-        Transaction tran = null;
         try (Session ses = Util.getSession().openSession()) {
             tran = ses.beginTransaction();
             ses.createSQLQuery(sq).executeUpdate();
@@ -37,7 +38,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        Transaction tran = null;
         try (Session ses = Util.getSession().openSession()) {
             tran = ses.beginTransaction();
             ses.createSQLQuery("DROP TABLE IF EXISTS allusers;")
@@ -51,14 +51,9 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Transaction tran = null;
         try (Session ses = Util.getSession().openSession()) {
             tran = ses.beginTransaction();
-            ses.createSQLQuery("INSERT INTO allusers (name, lastName, age) VALUES (:name,:lastName,:age)")
-                    .setParameter("name", name)
-                    .setParameter("lastName", lastName)
-                    .setParameter("age", age)
-                    .executeUpdate();
+            ses.save(new User(name, lastName, age));
             tran.commit();
             System.out.println("User с именем - " + name + " добавлен в базу");
         } catch (Exception e) {
@@ -69,7 +64,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-        Transaction tran = null;
         try (Session ses = Util.getSession().openSession()) {
             tran = ses.beginTransaction();
             User user = ses.get(User.class, id);
@@ -84,14 +78,13 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         try (Session ses = Util.getSession().openSession()) {
-            return ses.createQuery("from User").list();
+           return ses.createQuery("from User", User.class).list();
 
         }
     }
 
     @Override
     public void cleanUsersTable() {
-        Transaction tran = null;
         try (Session ses = Util.getSession().openSession()) {
             tran = ses.beginTransaction();
             ses.createQuery("delete User");
